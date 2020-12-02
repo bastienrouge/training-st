@@ -7,8 +7,5 @@
 {% block content %}
     <h2>{{ 'contact.title'|trans }}</h2>
 
-    {{ form_start(contact_form) }}
-        {{ form_rest(contact_form) }}
-        <button type="submit" class="btn">{{ 'contact.submit'|trans }}</button>
-    {{ form_end(contact_form) }}
+    {{ form(contact_form) }}
 {% endblock %}
