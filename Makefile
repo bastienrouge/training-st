@@ -2,8 +2,9 @@ SYMFONY=symfony
 CONSOLE=${SYMFONY} console
 PHP=${SYMFONY} php
 COMPOSER=${SYMFONY} composer
+YARN=yarn
 
-.PHONY: install env vendor db db-create
+.PHONY: install env vendor db db-create node-modules assets
 .DEFAULT_GOAL := help
 
 ##
@@ -41,19 +42,28 @@ browse: ## Open the app in your web browser
 ###    Project commands       #
 ###---------------------------#
 ##
-install: env vendor db ## Install the whole project
+install: env vendor db node-modules assets ## Install the whole project
+	@echo "\n\033[35m* Project ready\033[0m"
+	@echo "\033[35m\n-> Try a \033[34mmake start\033[35m, then \033[34mmake browse\033[0m.\033[0m"
 
 env: ./.env ## Create the .env.local file
-	@echo "\033[35m* Creating .env.local file\033[0m\c"
-	@cp ./.env ./.env.local && echo "     [OK]"
+	@echo "\n\033[35m* Creating .env.local file\033[0m"
+	@cp ./.env ./.env.local
 
 vendor: ./composer.json ## Install PHP dependencies
-	@echo "\033[35m* Installing PHP dependencies\033[0m\c"
-	@$(COMPOSER) install --prefer-dist --no-progress --quiet && echo "  [OK]"
+	@echo "\n\033[35m* Installing PHP dependencies\033[0m"
+	@$(COMPOSER) install --prefer-dist --no-progress --quiet
 
 db: vendor db-create ## Deploy the database
 
 db-create: ## Only create the database
-	@echo "\033[35m* Creating the database\033[0m"
+	@echo "\n\033[35m* Creating the database\033[0m"
 	@$(CONSOLE) doctrine:database:create
 
+node-modules:
+	@echo "\n\033[35m* Installing JS dependencies\033[0m"
+	@$(SYMFONY) run yarn
+
+assets: node-modules
+	@echo "\n\033[35m* Deploying web assets\033[0m"
+	@$(SYMFONY) run yarn encore dev
