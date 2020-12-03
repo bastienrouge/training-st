@@ -15,14 +15,24 @@ services:
         bind:
             # these are the scalar arguments used by service constructors. Instead of defining
             # the 'arguments' option for each service, you can define all once in this file
-            $recipient: '%app.mail_recipient%'
             $dictionaries: '%app.dictionaries%'
+            $internalContactEmail: '%app.mail_recipient%'
 
     App\:
         resource: '../src/*'
         exclude: '../src/{Entity,Migrations,Tests}'
 
+# Either "_instanceof" here or autoconfiguration. @see App\Kernel::build()
+    _instanceof:
+        App\Game\Loader\LoaderInterface:
+            tags: ['app.game_loader']
+
+# Either "!tagged" here or the custom compiler pass. @see App\Kernel::build()
     App\Game\WordList:
         calls:
-            - { method: 'addLoader', arguments: ['@App\Game\Loader\TextFileLoader'] }
-            - { method: 'addLoader', arguments: ['@App\Game\Loader\XmlFileLoader'] }
+            - ['setLoaders', [!tagged 'app.game_loader']]
+
+#    App\Game\WordList:
+#        calls:
+#            - { method: 'addLoader', arguments: ['@App\Game\Loader\TextFileLoader'] }
+#            - { method: 'addLoader', arguments: ['@App\Game\Loader\XmlFileLoader'] }

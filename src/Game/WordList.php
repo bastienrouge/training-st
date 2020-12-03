@@ -23,6 +23,13 @@ class WordList
         $this->loaded = false;
     }
 
+    public function setLoaders(iterable $loaders): void
+    {
+        foreach ($loaders as $loader) {
+            $this->addLoader($loader);
+        }
+    }
+
     /**
      * Returns a word picked randomly from the loaded dictionaries.
      */

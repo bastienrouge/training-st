@@ -21,6 +21,7 @@ class GameController extends AbstractController
      */
     public function home(Runner $gameRunner): Response
     {
+        dump($gameRunner);
         return $this->render('game/home.html.twig', [
             'game' => $gameRunner->loadGame()
         ]);
