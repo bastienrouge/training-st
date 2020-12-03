@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/game")
@@ -18,6 +19,7 @@ class GameController extends AbstractController
 {
     /**
      * @Route("/", name="game_home", methods="GET", defaults={"_locale": "en"})
+     * @IsGranted("ROLE_PLAYER")
      */
     public function home(Runner $gameRunner): Response
     {
@@ -29,6 +31,7 @@ class GameController extends AbstractController
 
     /**
      * @Route("/won", name="game_won", methods="GET")
+     * @IsGranted("ROLE_PLAYER")
      */
     public function won(Runner $gameRunner): Response
     {
@@ -47,6 +50,7 @@ class GameController extends AbstractController
 
     /**
      * @Route("/failed", name="game_failed", methods="GET")
+     * @IsGranted("ROLE_PLAYER")
      */
     public function failed(Runner $gameRunner): Response
     {
@@ -65,10 +69,13 @@ class GameController extends AbstractController
 
     /**
      * @Route("/reset", name="game_reset", methods={"GET", "POST"})
+     * @IsGranted("ROLE_PLAYER")
      */
     public function reset(Runner $gameRunner): RedirectResponse
     {
-        $gameRunner->resetGame();
+        if ($this->isGranted('GAME_RESET', $gameRunner->loadGame())) {
+            $gameRunner->resetGame();
+        }
 
         return $this->redirectToRoute('game_home');
     }
@@ -79,6 +86,7 @@ class GameController extends AbstractController
      * @Route("/play/{letter}", name="game_play_letter", methods={"GET"}, requirements={
      *   "letter"="[A-Z]"
      * })
+     * @IsGranted("ROLE_PLAYER")
      */
     public function playLetter(Runner $gameRunner, string $letter): RedirectResponse
     {
@@ -95,6 +103,7 @@ class GameController extends AbstractController
      * This action plays a word.
      *
      * @Route("/play", name="game_play_word", condition="request.request.has('word')", methods={"POST"})
+     * @IsGranted("ROLE_PLAYER")
      */
     public function playWord(Request $request, Runner $gameRunner): RedirectResponse
     {

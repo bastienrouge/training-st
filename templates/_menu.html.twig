@@ -4,10 +4,19 @@
             <a href="{{ path('game_home') }}">{{ 'menu.game'|trans }}</a>
         </li>
         <li>
-            <a href="#">{{ 'menu.register'|trans }}</a>
-        </li>
-        <li>
             <a href="#">{{ 'menu.contact'|trans }}</a>
         </li>
+        {% if is_granted('ROLE_USER') %}
+            <li>
+                <a href="{{ path('app_logout') }}">{{ 'menu.logout'|trans }}</a>
+            </li>
+        {% else %}
+            <li>
+                <a href="{{ path('app_login') }}">{{ 'menu.login'|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('app_register') }}">{{ 'menu.register'|trans }}</a>
+            </li>
+        {% endif %}
     </ul>
 </nav>

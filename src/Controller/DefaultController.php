@@ -10,7 +10,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+/**
+ * Class DefaultController
+ * @package App\Controller
+ * @IsGranted("ROLE_USER")
+ */
 class DefaultController extends AbstractController
 {
     /**
